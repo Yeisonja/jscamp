@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta
+			name="description"
+			content="listado con empleos y filtros para encontrar el trabajo de tus sueños"
+		/>
+		<title>DevJobs - Empleos</title>
+		<link rel="stylesheet" href="./style.css" />
+
+		<script type="module">
+			// importamos react
+			import React from "https://esm.sh/react?dev";
+			import ReacDOM from "https://esm.sh/react-dom/client?dev";
+
+			// traemos el objeto global.
+			window.React = React;
+			window.ReactDOM = ReacDOM;
+		</script>
+
+		<script src="https://unpkg.com/@babel/standalone/babel.min.js">
+			// podemos cargar babel
+		</script>
+		<script type="text/babel">
+			// creamos nuestro primer elemento con React
+			// const titulo = (
+			// 	<h1 style={{ color: "#09f" }}>Hola, bienvenido a React Js</h1>
+			// );
+
+			// componente de React
+			// los componentes se escriben con la primera letra en mayúsculas.
+			// function Saludo({ nombre, color }) {
+			// 	return <h2 style={{ color: color }}>Hola, {nombre}</h2>;
+			// }
+			// los comentarios se siguen viendo igual
+			function JobCard({ data, titulo, empresa, ubicacion, descripcion }) {
+				// Hook en React: useState
+				// para poder gestionar este estado se necesitan dos cosas:
+				// saber si está encendido, y una forma de actualizar el estado.
+				const [isApplied, setisApplied] = React.useState(false); // hay que indicar cuál es su estado inicial. por defecto es false
+
+				/*
+					useState, cuando le pasamos el valor inicial lo que hace es devolver un array de dos posiciones
+					es necesario hacer una desestructuración.
+				*/
+
+				// ejemplo de desestructuración:
+				// const numbers = [1, 2, 3];
+				// const [firtsNumber, secondNumber, thirdNumber] = numbers;
+
+				function handleClick() {
+					setisApplied(!isApplied);
+				}
+
+				const text = isApplied ? "Aplicado" : "Aplicar";
+				const buttonClass = isApplied ? "is-applied" : "";
+				const isAppliedText = isApplied ? "Sí" : "No";
+
+				return (
+					<article
+						className="job-listing-card"
+						data-modalidad={data?.modalidad}
+						data-nive={data?.nivel}
+						data-technology={data?.technology}
+					>
+						<div>
+							<h3>{titulo}</h3>
+							<small>
+								{empresa} | {ubicacion} ¿He aplicado? {isAppliedText}
+							</small>
+							<p>{descripcion}</p>
+						</div>
+						<button
+							// disabled={isApplied}
+							className={`button-apply-job `}
+							onClick={handleClick}
+						>
+							{text}
+						</button>
+					</article>
+				);
+			}
+			function App() {
+				return (
+					<div className="jobs-listing">
+						<JobCard
+							titulo="Desarrollador/a Frontend React.js"
+							empresa="Tech Solutions"
+							ubicacion="Remoto"
+							descripcion="Únete a nuestro equipo como desarrollador/a frontend especializado en React.js. Trabaja en proyectos innovadores y colabora con un equipo dinámico."
+							data={{
+								modalidad: "remoto",
+								nivel: "junior",
+								technology: "react",
+							}}
+						/>
+					</div>
+				);
+			}
+			// es necesario renderizar este elemento en la página web. en el documento html.
+
+			const rootElement = document.querySelector("#root");
+			// creamos una raíz de react
+			const root = ReactDOM.createRoot(rootElement); // donde vamos a renderizar todos los elementos de react.
+			root.render(<App />); // renderiza el titulo
+		</script>
+	</head>
+	<body>
+		<header>
+			<h1>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="24"
+					height="24"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="1"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					class="icon icon-tabler icons-tabler-outline icon-tabler-code"
+				>
+					<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+					<path d="M7 8l-4 4l4 4" />
+					<path d="M17 8l4 4l-4 4" />
+					<path d="M14 4l-4 16" />
+				</svg>
+				DevJobs
+			</h1>
+
+			<nav>
+				<a href="./index.html">Inicio</a>
+				<a href="./empleos.html">Empleos</a>
+			</nav>
+
+			<div>
+				<!-- <a href="">Publicar un empleo</a>
+				<a href="">Iniciar sesión</a> -->
+				<!-- cargamos el webComponent -->
+				<devjobs-avatar
+					service="github"
+					username="yeisonja"
+					size="32"
+				></devjobs-avatar>
+
+				<devjobs-avatar
+					service="github"
+					username="yeisonja"
+					size="20"
+				></devjobs-avatar>
+			</div>
+		</header>
+		<main>
+			<section class="jobs-search">
+				<h1>React js, primeros pasos</h1>
+			</section>
+
+			<section>
+				<h2>Empleos disponibles</h2>
+				<div id="root"></div>
+			</section>
+		</main>
+
+		<footer style="padding-bottom: 2000px">
+			<small>&copy; 2026 DevJobs. Todos los derechos reservados.</small>
+		</footer>
+	</body>
+</html>
