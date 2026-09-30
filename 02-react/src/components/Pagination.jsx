@@ -31,11 +31,22 @@ export function Pagination({ currentPage, totalPages, onPageChange }) {
 			onPageChange(page);
 		}
 	};
+
+	// seguimos trabajando con la paginación
+	// necesitamos que al momento de filtrar se refleje en la url de la página.
+	const buildPageUrl = (page) => {
+		// construimos la url
+		const url = new URL(window.location);
+		// cambiamos los parámetros y le ponemos la página que le pasamos por parámetro
+		url.searchParams.set("page", page);
+		return `${url.pathname}?${url.searchParams.toString()}`; // devolvemos la nueva url
+	};
+
 	// configurar cómo se muestran las páginas
 	const isFirstPage = currentPage === 1; // si la página actual es 1
 	const isLastPage = currentPage === totalPages; // si la página actual es la última página, es decir, 10
 
-	// vamos a cambiar los estilos
+	// vamos a cambiar los estilos de las flechas
 	const stylePrevButton = isFirstPage
 		? { pointerEvents: "none", opacity: 0.5 }
 		: {};
@@ -45,7 +56,13 @@ export function Pagination({ currentPage, totalPages, onPageChange }) {
 
 	return (
 		<nav className={styles.pagination}>
-			<a href="#" style={stylePrevButton} onClick={handlePrevClick}>
+			{/* renderizado condicional */}
+			{/* {isFirstPage === false && ()} */}
+			<a
+				href={buildPageUrl(currentPage - 1)}
+				style={stylePrevButton}
+				onClick={handlePrevClick}
+			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					width="24"
@@ -63,11 +80,11 @@ export function Pagination({ currentPage, totalPages, onPageChange }) {
 				</svg>
 			</a>
 
-			{/* iteramos el array con map */}
+			{/* iteramos el array de páginas con map */}
 			{pages.map((page) => (
 				<a
 					key={page}
-					href="#"
+					href={buildPageUrl(page)}
 					className={currentPage === page ? styles.isActive : ""}
 					onClick={(event) => handleChangePage(event, page)}
 				>
@@ -75,7 +92,11 @@ export function Pagination({ currentPage, totalPages, onPageChange }) {
 				</a>
 			))}
 
-			<a href="#" style={styleNextButton} onClick={handleNextClick}>
+			<a
+				href={buildPageUrl(currentPage + 1)}
+				style={styleNextButton}
+				onClick={handleNextClick}
+			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					width="24"
