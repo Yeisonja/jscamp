@@ -1,32 +1,24 @@
-import { useEffect, useState } from "react";
+import { useCallback } from "react";
+import { useNavigate, useLocation } from "react-router";
+// el useNavigate: nos permite navegar de forma programatica
+// el useLocation: nos devuelve la localización actual de la url, donde
+// vamos a tener el (path, todos los queryParams, la url completa)
 
 export function useRouter() {
-	// creamos un customHook
-	// los customHook se escriben con la letra use y pueden utilizar otros hooks de react.
-	// para recuperar el path actual
-	const [currentPath, setCurrentPath] = useState(window.location.pathname);
-
-	useEffect(() => {
-		const handleLocationChange = () => {
-			setCurrentPath(window.location.pathname);
-		};
-
-		window.addEventListener("popstate", handleLocationChange);
-
-		// limpiamos el useEffect
-		return () => {
-			window.removeEventListener("popstate", handleLocationChange);
-		};
-	}, []);
+	const navigate = useNavigate();
+	const location = useLocation(); //
 
 	// le podemos colocar funciones
-	function navigateTo(path) {
-		window.history.pushState({}, "", path);
-		window.dispatchEvent(new PopStateEvent("popstate"));
-	}
+	// ✅ Usamos useCallback para que la función mantenga la misma referencia
+	const navigateTo = useCallback(
+		(path) => {
+			navigate(path);
+		},
+		[navigate],
+	);
 
 	return {
 		navigateTo,
-		currentPath,
+		currentPath: location.pathname,
 	};
 }

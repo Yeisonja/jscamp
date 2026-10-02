@@ -5,28 +5,29 @@ import { useState } from "react"; // necesitamos guardar estados.
 import { Pagination } from "../components/Pagination";
 import { SearchFormSection } from "../components/SearchFormSection";
 import { JobListings } from "../components/JobListings";
-import { useRouter } from "../hooks/useRouter";
-// import jobsData from "../data.json";
+import { useSearchParams } from "react-router";
 
+// useSearchParams: es un hook que recupera los parámetros de la url.
 // necesitamos saber cuántos resultados vamos a tener por página.
 const RESULT_PER_PAGE = 4;
 
 // hacemos un custom hook
 const useFilters = () => {
+	const [searchParams, setSearchParams] = useSearchParams();
 	// guardar los filtros y actualizar los filtros
 	const [filters, setFilter] = useState(() => {
-		const params = new URLSearchParams(window.location.search);
+		// con useSearchParams no hay que llamar a new URLSearchParams
+		// const params = new URLSearchParams(window.location.search);
 		return {
-			technology: params.get("technology") || "",
-			location: params.get("type") || "",
-			experienceLevel: params.get("level") || "",
+			technology: searchParams.get("technology") || "",
+			location: searchParams.get("type") || "",
+			experienceLevel: searchParams.get("level") || "",
 		};
 	});
 	// para guardar el texto filtrado
-	const [textToFilter, setTextToFilter] = useState(() => {
-		const params = new URLSearchParams(window.location.search);
-		return params.get("text") || "";
-	});
+	const [textToFilter, setTextToFilter] = useState(
+		() => searchParams.get("text") || "",
+	);
 
 	// página actual y una forma de actualizar en que página estamos.
 	const [currentPage, setCurrentPage] = useState(() => {
@@ -38,8 +39,6 @@ const useFilters = () => {
 	const [jobs, setJobs] = useState([]);
 	const [total, setTotal] = useState(0);
 	const [loading, setLoading] = useState(true);
-
-	const { navigateTo } = useRouter();
 
 	// hacemos el fetch
 	useEffect(() => {
@@ -92,69 +91,25 @@ const useFilters = () => {
 
 	// cada vez que cambien ciertos parámetros, escucha los cambios y reflejarlos en la url.
 	useEffect(() => {
-		const params = new URLSearchParams();
-		if (textToFilter) params.append("text", textToFilter);
-		if (filters.technology) params.append("technology", filters.technology);
-		if (filters.location) params.append("type", filters.location);
-		if (filters.experienceLevel)
-			params.append("level", filters.experienceLevel);
+		setSearchParams((params) => {
+			if (textToFilter) {
+				params.set("text", textToFilter);
+			} else {
+				params.delete("text");
+			}
+			if (filters.technology) params.set("technology", filters.technology);
+			if (filters.location) params.set("type", filters.location);
+			if (filters.experienceLevel) params.set("level", filters.experienceLevel);
 
-		// si estamos en la página que sea mayor a la actual la colocamos como parámetro en la url.
-		if (currentPage > 1) params.append("page", currentPage);
+			// si estamos en la página que sea mayor a la actual la colocamos como parámetro en la url.
+			if (currentPage > 1) params.set("page", currentPage);
 
-		// construimos la nueva url
-		const newUrl = params.toString()
-			? `${window.location.pathname}?${params.toString()}`
-			: window.location.pathname;
-		// si la nueva url tiene parámetros se le agrega esa url con la ruta y los parámetros
-		// de lo contrario solo le agrega la ruta
-		navigateTo(newUrl);
-	}, [filters, textToFilter, currentPage, navigateTo]);
-	// nota: la paginación es recomendable hacerla en la API por mótivos de seguridad y rendimiento.
-	// filtramos utilizando la tecnología.
-	// const jobsFilteredByFilters = jobsData.filter((job) => {
-	// 	return (
-	// 		filters.technology === "" || job.data.technology === filters.technology
-	// 	);
-	// filtrar por tecnología, ubicación y experiencia
-	// const matchTech =
-	// 	filters.technology === "" || job.data.technology === filters.technology;
-	// const matchLocation =
-	// 	filters.location === "" || job.ubicacion === filters.location;
-	// const matchExperience =
-	// 	filters.experienceLevel === "" ||
-	// 	job.data.nivel === filters.experienceLevel;
+			return params;
+		});
+	}, [filters, textToFilter, currentPage, setSearchParams]);
 
-	// return matchTech || matchLocation || matchExperience;
-	// });
-
-	// filtramos por ubicación
-	// const jobsFilteredByLocation = jobsData.filter((job) => {
-	// 	return filters.location === "" || job.ubicacion === filters.location;
-	// });
-
-	// const jobsWithTextFilterLocation =
-	// console.log(jobsFilteredByLocation);
-
-	// primero filtramos y luego paginamos
-	// si el textToFilter es vacío, trae los jobsFilteredByFilters, sino filtra y devuelve el
-	// titulo que incluya el textToFilter en minúsculas.
-	// const jobsWithTextFilter =
-	// 	textToFilter === ""
-	// 		? jobsFilteredByFilters
-	// 		: jobsData.filter((job) => {
-	// 				return job.titulo.toLowerCase().includes(textToFilter.toLowerCase());
-	// 			});
-	// console.log(jobsWithTextFilter);
 	const totalPages = Math.ceil(total / RESULT_PER_PAGE);
 	// Math.ceil(): siempre redondea hacia arriba.
-
-	// ahora vamos a filtrar los empleos por página.
-	// utilizamos el método slice para cortar
-	// const pagedResults = jobsWithTextFilter.slice(
-	// 	(currentPage - 1) * RESULT_PER_PAGE, // Página 1 -> 0, Página 2 -> 5, Página 3 -> 10
-	// 	currentPage * RESULT_PER_PAGE, // Página 1 -> 5, Página 2 -> 10, Página 3 -> 15
-	// );
 
 	// creamos un método en el padre
 	// el método recibe la página
