@@ -1,4 +1,6 @@
+import { NavLink } from "react-router";
 import { Link } from "./Link";
+import { useAuth } from "../context/AuthContext";
 
 export function Header() {
 	return (
@@ -27,9 +29,34 @@ export function Header() {
 			</Link>
 
 			<nav>
-				<Link href="/">Inicio</Link>
-				<Link href="/search">Empleos</Link>
+				<NavLink
+					className={({ isActive }) => (isActive ? "nav-link-active" : "")}
+					to="/"
+				>
+					Inicio
+				</NavLink>
+				<NavLink
+					className={({ isActive }) => (isActive ? "nav-link-active" : "")}
+					to="/search"
+				>
+					Empleos
+				</NavLink>
 			</nav>
+
+			<HeaderUserButton />
 		</header>
+	);
+}
+
+function HeaderUserButton() {
+	const { isLoggedIn, login, logout } = useAuth();
+	return (
+		<>
+			{isLoggedIn ? (
+				<button onClick={logout}>Cerrar sesión</button>
+			) : (
+				<button onClick={login}>Iniciar sesión</button>
+			)}
+		</>
 	);
 }
