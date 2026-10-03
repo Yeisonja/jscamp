@@ -31,6 +31,7 @@ export function FavoritesProvider({ children }) {
 		removeFavorite,
 		isFavorite,
 	};
+	// siempre se retorna el contexto con el valor como prop envolviendo al hijo.
 	return <FavoritesContext value={value}>{children}</FavoritesContext>;
 }
 

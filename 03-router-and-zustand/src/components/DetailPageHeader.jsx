@@ -1,5 +1,5 @@
 import styles from "../pages/Detail.module.css";
-import { useAuth } from "../context/AuthContext";
+import { useAuthStore } from "../store/authStore";
 
 export default function DetailPageHeader({ job, children }) {
 	return (
@@ -16,7 +16,7 @@ export default function DetailPageHeader({ job, children }) {
 }
 
 export function DetailApplyButton() {
-	const { isLoggedIn } = useAuth();
+	const { isLoggedIn } = useAuthStore();
 	return (
 		<button disabled={!isLoggedIn} className={styles.applyButton}>
 			{isLoggedIn ? "Aplicar ahora" : "Inica sesión para aplicar"}
