@@ -6,6 +6,22 @@ import DetailPageBreadCrumb from "../components/DetailPageBreadCrumb";
 import DetailPageHeader, {
 	DetailApplyButton,
 } from "../components/DetailPageHeader";
+import { useFavoritesStore } from "../store/favoritesStore";
+
+function DetailFavoriteButton({ jobId }) {
+	const { toggleFavorite, isFavorite } = useFavoritesStore();
+
+	return (
+		<button
+			onClick={() => toggleFavorite(jobId)}
+			aria-label={
+				isFavorite(jobId) ? "Remove from favorites" : "Add to favorites"
+			}
+		>
+			{isFavorite(jobId) ? "💖" : "🤍"}
+		</button>
+	);
+}
 
 export default function JobDetail() {
 	const { jobId } = useParams(); // extrae el parámetro de la url.
@@ -70,6 +86,7 @@ export default function JobDetail() {
 				<DetailPageBreadCrumb job={job} />
 				<DetailPageHeader job={job} />
 				<DetailApplyButton />
+				<DetailFavoriteButton jobId={job.id} />
 
 				<JobSection
 					title="Descripción del puesto"

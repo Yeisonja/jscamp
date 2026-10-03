@@ -9,6 +9,11 @@ export const useFavoritesStore = create((set, get) => ({
 	// Estado
 	favorites: [],
 
+	// limpia los favoritos
+	clearFavorites: () => {
+		set({ favorites: [] });
+	},
+
 	// Acciones
 	addFavorite: (jobId) => {
 		set((state) => ({
