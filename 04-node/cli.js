@@ -50,3 +50,11 @@ for (const entry of entries) {
 	const size = entry.isDir ? "-" : `${entry.size}`;
 	console.log(`${icon}   ${entry.name.padEnd(25)} ${size}`);
 }
+
+// Ejercicios
+// sort
+// 1. Que aparezcan primero las carpetas
+// 2. Que estén en orden alfabético los ficheros
+
+// filter
+// 3. Tener en cuenta flags como --files-only o --dirs-only
