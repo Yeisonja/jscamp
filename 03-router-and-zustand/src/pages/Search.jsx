@@ -72,7 +72,7 @@ const useFilters = () => {
 				// simulamos un delay de 5s
 				// await new Promise((resolve) => setTimeout(resolve, 5000));
 				const response = await fetch(
-					`https://jscamp-api.vercel.app/api/jobs?${queryParams}`,
+					`http://localhost:1234/jobs?${queryParams}`,
 				);
 				const json = await response.json();
 				setJobs(json.data);

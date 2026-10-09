@@ -1,5 +1,6 @@
 import express from "express";
 import { DEFAULTS } from "./config.js";
+import cors from "cors";
 import jobs from "./jobs.json" with { type: "json" };
 // se puede importar pero de un modo diferente en node js
 
@@ -11,6 +12,22 @@ const app = express(); // creamos el servidor
 // este middleware parsea automáticamente las peticiones POST, detecta si tiene la
 // cabecera application/json y pasa ese objeto a request.body.
 app.use(express.json());
+// app.use(cors()); // podemos hacer esto pero no es tan buena práctica, porque cede permisos a todo
+
+const ACCEPTED_ORIGINS = ["http://localhost:3000", "http://localhost:5173"];
+
+app.use(
+	cors({
+		// detectamos el origen
+		origin: (origin, callback) => {
+			if (!origin || ACCEPTED_ORIGINS.includes(origin)) {
+				return callback(null, true);
+				// el primer parámetro en los callback, casi siempre es para devolver el error.
+			}
+			return callback(new Error("Origen no permitido"));
+		},
+	}),
+);
 
 // leemos el archivo json con los empleos y lo parseamos, no es la forma correcta de hacerlo.
 // const jobs = JSON.parse(readFileSync("./jobs.json", "utf-8"));
@@ -62,6 +79,8 @@ app.get("/health", (request, response) => {
 
 // esto es un recurso para recuperar todos los trabajos.
 app.get("/jobs", (req, res) => {
+	// es necesario agregar una cabecera para con los CORS
+	// res.header("Access-Control-Allow-Origin", "http://localhost:5173");
 	// la petición a la base de datos la haremos aquí
 
 	// es necesario filtrar, así que hay que pasar los parámetros
@@ -127,7 +146,12 @@ app.get("/jobs", (req, res) => {
 	// en esta paginación, offset es 0 y limit es 10
 	// quiere decir: por cada página trae los primeros 10
 
-	return res.json(paginatedJobs);
+	return res.json({
+		data: paginatedJobs,
+		total: filteredJobs.length,
+		limit: limitNumber,
+		offset: offsetNumber,
+	});
 });
 
 // también podemos tener una ruta con parámetro dinámic
