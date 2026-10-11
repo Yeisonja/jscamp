@@ -76,6 +76,8 @@ export class JobModel {
 		};
 
 		jobs.push(newJob); // esto lo haremos en una base de datos.
+		// console.log("Trabajo creado:", newJob.id);
+		// console.log("Trabajos almacenados:", jobs);
 
 		return newJob;
 	}

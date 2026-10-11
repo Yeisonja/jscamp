@@ -15,7 +15,7 @@ app.use(corsMiddleware());
 // vamos a crear un router que va a tener todas las rutas
 app.use("/jobs", jobsRouter);
 
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== "production" && process.env.NODE_ENV !== "test") {
 	// escuchamos la aplicación
 	app.listen(PORT, () => {
 		console.log(`Servidor corriendo en: http://localhost:${PORT}`);
