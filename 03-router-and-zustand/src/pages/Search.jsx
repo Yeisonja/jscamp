@@ -31,8 +31,9 @@ const useFilters = () => {
 
 	// página actual y una forma de actualizar en que página estamos.
 	const [currentPage, setCurrentPage] = useState(() => {
-		const params = new URLSearchParams(window.location.search);
-		const page = Number(params.get("page"));
+		// const params = new URLSearchParams(window.location.search);
+
+		const page = Number(searchParams.get("page"));
 		return Number.isNaN(page) ? page : 1;
 	});
 

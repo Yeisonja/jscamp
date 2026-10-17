@@ -49,7 +49,7 @@ export default function HomePage() {
 							<path d="M21 21l-6 -6" />
 						</svg>
 						<input
-							type="text"
+							type="search" // le aplica el rol: searchbox
 							name="search"
 							required
 							placeholder="Buscar empleos por título, habilidad o empresa"

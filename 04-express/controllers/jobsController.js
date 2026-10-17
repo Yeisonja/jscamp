@@ -24,7 +24,7 @@ export class JobController {
 		// interrogante en la url
 
 		// llamamos al modelo
-		const paginatedJobs = await JobModel.getAll({
+		const jobs = await JobModel.getAll({
 			text,
 			title,
 			level,
@@ -38,8 +38,8 @@ export class JobController {
 		const offsetNumber = Number(offset);
 
 		return res.json({
-			data: paginatedJobs,
-			total: paginatedJobs.length,
+			data: jobs,
+			total: jobs.length,
 			limit: limitNumber,
 			offset: offsetNumber,
 		});

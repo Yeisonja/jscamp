@@ -123,7 +123,7 @@ export function SearchFormSection({ onSearch, onTextFilter, initialText }) {
 						ref={inputRef}
 						name={idText}
 						id="empleos-search-input"
-						type="text"
+						type="search"
 						placeholder="Buscar trabajos, empresas o habilidades"
 						onChange={handleTextChange} // cuando cambie el input
 						defaultValue={initialText} // el valor por defecto es el initialText

@@ -48,6 +48,9 @@ export class JobModel {
 		const limitNumber = Number(limit);
 		const offsetNumber = Number(offset);
 
+		console.log("Total original en la variable jobs: ", jobs.length);
+		console.log("Total después de filtros: ", filteredJobs.length);
+
 		let paginatedJobs = filteredJobs.slice(
 			offsetNumber,
 			offsetNumber + limitNumber,
@@ -57,6 +60,7 @@ export class JobModel {
 		// en esta paginación, offset es 0 y limit es 10
 		// quiere decir: por cada página trae los primeros 10
 
+		console.log(paginatedJobs.length);
 		return paginatedJobs;
 	}
 

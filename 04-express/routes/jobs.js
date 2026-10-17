@@ -1,7 +1,32 @@
 import { Router } from "express";
 import { JobController } from "../controllers/jobsController.js";
+import { validateJob, validateParcialJob } from "../schemas/jobSchema.js";
 
 export const jobsRouter = Router();
+
+// creamos el middlware para validar los tipos
+function validateCreate(req, res, next) {
+	const result = validateJob(req.body); // enviamos el cuerpo de la request
+	// el safeParse(): nos permite saber si ha ido bien o no
+	if (result.success) {
+		req.body = result.data; // vamos a tener los datos validados
+		return next(); // nos vamos a la siguiente ruta
+	}
+	// si ha ido mal
+	return res
+		.status(400)
+		.json({ error: "Invalid Request", details: result.error.errors }); // dice el tipo de errores
+}
+
+// hacemos el middleware de validación parcial
+function validateUpdate(req, res, next) {
+	const result = validateParcialJob(req.body);
+	if (!result.success) {
+		return res.status(400).json({ error: JSON.parse(result.error.message) });
+	}
+	req.body = result.data;
+	next();
+}
 
 jobsRouter.get("/", JobController.getAll);
 
@@ -15,13 +40,13 @@ jobsRouter.get("/:id", JobController.getId);
 // 407 --> "Proxy Authentication Required"; 408 --> "Request Timeout"
 
 // recurso para crear un trabajo
-jobsRouter.post("/", JobController.create);
+jobsRouter.post("/", validateCreate, JobController.create);
 
 // recurso para actualizar reemplazando un trabajo
 jobsRouter.put("/:id", JobController.update);
 
 // recurso actualizar un trabajo parcialmente
-jobsRouter.patch("/:id", JobController.partialUpdate);
+jobsRouter.patch("/:id", validateUpdate, JobController.partialUpdate);
 
 // recurso para borrar un trabajo
 jobsRouter.delete("/:id", JobController.delete);
