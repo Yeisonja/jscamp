@@ -1,0 +1,29 @@
+.title {
+	text-decoration: none;
+	color: inherit; /* inherit: toma el valor de su elemento padre */
+
+	&:hover {
+		text-decoration: underline;
+	}
+}
+
+.actions {
+	display: flex;
+	flex-direction: column;
+	text-align: center;
+	gap: 0.5rem;
+}
+
+.details {
+	color: #fff;
+	background: none;
+	cursor: pointer;
+	border: none;
+	font-size: 1rem;
+	text-decoration: none;
+
+	&:hover {
+		color: #09f;
+		text-decoration: underline;
+	}
+}
