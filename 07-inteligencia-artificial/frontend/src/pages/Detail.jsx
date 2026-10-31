@@ -7,6 +7,9 @@ import DetailPageHeader, {
 	DetailApplyButton,
 } from "../components/DetailPageHeader";
 import { useFavoritesStore } from "../store/favoritesStore";
+import { useAISummary } from "../hooks/useAISummary";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 function DetailFavoriteButton({ jobId }) {
 	const { toggleFavorite, isFavorite } = useFavoritesStore();
@@ -23,6 +26,35 @@ function DetailFavoriteButton({ jobId }) {
 	);
 }
 
+// creamos un componente para mostrar el resumen de la inteligencia artificial
+export function AISummary({ jobId }) {
+	const { summary, generateSummary, loading } = useAISummary(jobId);
+
+	if (summary) {
+		return (
+			<section className={styles.section}>
+				<h2 className={styles.sectionTitle}>✨ Resumen Generado por IA</h2>
+
+				<div className={styles.sectionContent}>
+					<p>{summary}</p>
+				</div>
+			</section>
+		);
+	}
+
+	return (
+		// devolvemos un botón
+		<button
+			onClick={generateSummary}
+			disabled={loading}
+			className={styles.applyButton}
+		>
+			{/* si está cargando hacemos... */}
+			{loading ? "Generando resumen..." : "✨ Generar resumen con IA"}
+		</button>
+	);
+}
+
 export default function JobDetail() {
 	const { jobId } = useParams(); // extrae el parámetro de la url.
 
@@ -35,9 +67,12 @@ export default function JobDetail() {
 	useEffect(() => {
 		if (!jobId) return;
 
-		fetch(`https://jscamp-api.vercel.app/api/jobs/${jobId}`)
+		fetch(`${API_URL}/jobs/${jobId}`)
 			.then((response) => {
-				if (!response.ok) throw new Error("Trabajo no encontrado");
+				if (!response.ok) {
+					// throw new Error("Trabajo no encontrado")
+					navigate("/not-found");
+				}
 				return response.json();
 			})
 			.then((json) => {
@@ -55,7 +90,7 @@ export default function JobDetail() {
 
 	if (loading) {
 		return (
-			<div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 1rem" }}>
+			<div style={{ maxWidth: "900px", margin: "0 auto", padding: "0 1rem" }}>
 				<div className={styles.loading}>
 					<p className={styles.loadingText}>Cargando...</p>
 				</div>
@@ -85,6 +120,8 @@ export default function JobDetail() {
 			<div style={{ maxWidth: "900px", margin: "0 auto", padding: "2rem" }}>
 				<DetailPageBreadCrumb job={job} />
 				<DetailPageHeader job={job} />
+				<AISummary jobId={job.id} />
+
 				<DetailApplyButton />
 				<DetailFavoriteButton jobId={job.id} />
 

@@ -1,9 +1,10 @@
 {
-	"name": "04-express",
+	"name": "backend",
 	"version": "1.0.0",
 	"description": "",
 	"main": "index.js",
 	"scripts": {
+		"dev": "node --watch app.js",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"keywords": [],
@@ -19,8 +20,15 @@
 	"packageManager": "pnpm@12.9.1",
 	"type": "module",
 	"dependencies": {
+		"@google/genai": "^2.31.0",
+		"ai": "^7.0.156",
 		"cors": "^2.8.6",
 		"express": "^5.2.1",
+		"express-rate-limit": "^8.7.1",
+		"openai": "^7.43.0",
 		"zod": "^4.6.5"
+	},
+	"devDependencies": {
+		"vercel": "^65.7.0"
 	}
 }
